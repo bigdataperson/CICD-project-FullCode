@@ -23,11 +23,11 @@ def main():
     mlflow.start_run()
 
     # Log arguments
-    logging.info(f"Input data path: {args.data}")
+    logging.info(f"Input data path: {args.raw_data}")
     logging.info(f"Test-train ratio: {args.test_train_ratio}")
 
     # Read data
-    df = pd.read_csv(args.data)
+    df = pd.read_csv(args.raw_data)
 
     # Split data
     train_df, test_df = train_test_split(df, test_size=args.test_train_ratio, random_state=42)
