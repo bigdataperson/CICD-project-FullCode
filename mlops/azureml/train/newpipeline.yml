@@ -5,7 +5,7 @@ experiment_name: random_forest_training_pipeline  # Provide the experiment name
 description: Training Pipeline to automate vehicle pricing using Random Forest Regressor  # Provide the description for the pipeline
 
 inputs:
-  data:
+  raw_data:
     type: uri_file
     path: azureml:used-cars-data@latest
 
@@ -29,12 +29,12 @@ jobs:
     code: ../../../data-science/src
     command: >-
       python data_prep.py  
-      --data ${{inputs.data}} 
+      --raw_data ${{inputs.raw_data}} 
       --train_data ${{outputs.train_data}}
       --test_data ${{outputs.test_data}} 
     environment: azureml:used-cars-train-env@latest
     inputs:
-      data: ${{parent.inputs.data}}
+      data: ${{parent.inputs.raw_data}}
      
     outputs:
       train_data: ${{parent.outputs.train_data}}
