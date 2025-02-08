@@ -34,7 +34,7 @@ jobs:
       --test_data ${{outputs.test_data}} 
     environment: azureml:used-cars-train-env@latest
     inputs:
-      data: ${{parent.inputs.raw_data}}
+      raw_data: ${{parent.inputs.raw_data}}
      
     outputs:
       train_data: ${{parent.outputs.train_data}}
