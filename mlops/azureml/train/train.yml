@@ -11,7 +11,7 @@ inputs:
     type: integer  
     default: 100 
   max_depth:
-    type: number  # Specify the type for max_depth
+    type: str  # Specify the type for max_depth
     default: 15  # Provide the default value for max_depth
 outputs:
   model_output:
