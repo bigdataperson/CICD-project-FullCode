@@ -4,18 +4,16 @@ display_name: random_forest_training  # Provide the display name for the pipelin
 experiment_name: random_forest_training_pipeline  # Provide the experiment name
 description: Training Pipeline to automate vehicle pricing using Random Forest Regressor  # Provide the description for the pipeline
 
+
 inputs:
-  raw_data:
+  input:
     type: uri_file
     path: azureml:used-cars-data@latest
 
 outputs:
   train_data:
-    type:  # Specify the type for train_data output
   test_data:
-    type:   # Specify the type for test_data output
   model_info_output_path:
-    type: uri_folder  # Specify the type for model_info_output_path output
 
 settings:
   default_datastore: azureml:workspaceblobstore
@@ -24,21 +22,22 @@ settings:
 
 jobs:
   data_prep:
-    name: data_prep  # Provide the job name
-    display_name: data_prep  # Provide the display name for the job
+    name: data_prep
+    display_name: data_prep
     code: ../../../data-science/src
     command: >-
-      python data_prep.py  
+      python data_prep.py 
       --raw_data ${{inputs.raw_data}} 
       --train_data ${{outputs.train_data}}
-      --test_data ${{outputs.test_data}} 
+      --test_data ${{outputs.test_data}}
     environment: azureml:used-cars-train-env@latest
     inputs:
-      raw_data: ${{parent.inputs.raw_data}}
-     
+      raw_data: ${{parent.inputs.input}}
     outputs:
       train_data: ${{parent.outputs.train_data}}
       test_data: ${{parent.outputs.test_data}}
+
+
 
   sweep_step:
     name: sweep_job
