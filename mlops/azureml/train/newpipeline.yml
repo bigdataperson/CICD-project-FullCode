@@ -1,0 +1,85 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+display_name: random_forest_training  # Provide the display name for the pipeline
+experiment_name: random_forest_training_pipeline  # Provide the experiment name
+description: Training Pipeline to automate vehicle pricing using Random Forest Regressor  # Provide the description for the pipeline
+
+inputs:
+  raw_data:
+    type: uri_file
+    path: azureml:used-cars-data@latest
+
+outputs:
+  train_data:
+    type: str # Specify the type for train_data output
+  test_data:
+    type: str  # Specify the type for test_data output
+  model_info_output_path:
+    type: uri_folder  # Specify the type for model_info_output_path output
+
+settings:
+  default_datastore: azureml:workspaceblobstore
+  default_compute: azureml:cpu-cluster
+  continue_on_step_failure: false
+
+jobs:
+  data_prep:
+    name: data_prep  # Provide the job name
+    display_name: data_prep  # Provide the display name for the job
+    code: ../../../data-science/src
+    command: >-
+      python data_prep.py  
+      --data ${{inputs.data}} 
+      --test_train_ratio ${{inputs.test_train_ratio}} 
+      --train_data ${{outputs.train_data}}
+      --test_data ${{outputs.test_data}} 
+    environment: azureml:used-cars-train-env@latest
+    inputs:
+      data: ${{parent.inputs.data}}
+      test_train_ratio: ${{parent.inputs.test_train_ratio}}
+
+    outputs:
+      train_data: ${{parent.outputs.train_data}}
+      test_data: ${{parent.outputs.test_data}}
+
+  sweep_step:
+    name: sweep_job
+    display_name: sweep_job  # Hint: Provide the display name for the job
+    type: sweep
+    inputs:
+      train_data: ${{parent.jobs.data_prep.outputs.train_data}}
+      test_data: ${{parent.jobs.data_prep.outputs.test_data}}
+    outputs:
+      model_output:
+        type: mlflow_model
+    sampling_algorithm: random  # Specify the sampling algorithm
+    trial: ./train.yml  # Refers to a separate command component
+    search_space:
+      n_estimators:
+        type: choice
+        values: [10, 20, 30, 50]
+      max_depth:
+        type: choice  # Specify the type for max_depth
+        values: [3, 5, 10, None]  # Provide the values for max_depth
+    objective:
+      goal: minimize
+      primary_metric: "Mean Squared Error"
+    limits:
+      max_total_trials: 20
+      max_concurrent_trials: 10
+      timeout: 7200
+
+
+  register_model:
+    name: register_model  # Provide the job name
+    display_name: Register Model  # Provide the display name for the job
+    code: ../../../data-science/src
+    command: >-
+      python model_register.py 
+      --model ${{inputs.model}}
+      
+    environment: azureml:used-cars-train-env@latest
+    inputs:
+      model_name: "used_cars_price_prediction_model"
+      model: ${{parent.jobs.sweep_step.outputs.model_output}}
+   
