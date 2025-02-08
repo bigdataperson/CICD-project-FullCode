@@ -12,7 +12,7 @@ inputs:
     default: 100 
   max_depth:
     type: number  # Specify the type for max_depth
-    default: 15  # Provide the default value for max_depth
+    default: 100  # Provide the default value for max_depth
 outputs:
   model_output:
     type: mlflow_model  # Specify the type for model_output
