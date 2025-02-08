@@ -13,7 +13,7 @@ from sklearn.model_selection import train_test_split
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data", type=str, help="Path to input data")
+    parser.add_argument("--raw_data", type=str, help="Path to input data")
     parser.add_argument("--test_train_ratio", type=float, default=0.2)
     parser.add_argument("--train_data", type=str, help="Path to save train data")
     parser.add_argument("--test_data", type=str, help="Path to save test data")
