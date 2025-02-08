@@ -5,7 +5,7 @@ experiment_name: random_forest_training_pipeline  # Provide the experiment name
 description: Training Pipeline to automate vehicle pricing using Random Forest Regressor  # Provide the description for the pipeline
 
 inputs:
-  raw_data:
+  data:
     type: uri_file
     path: azureml:used-cars-data@latest
 
