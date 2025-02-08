@@ -30,14 +30,12 @@ jobs:
     command: >-
       python data_prep.py  
       --data ${{inputs.data}} 
-      --test_train_ratio ${{inputs.test_train_ratio}} 
       --train_data ${{outputs.train_data}}
       --test_data ${{outputs.test_data}} 
     environment: azureml:used-cars-train-env@latest
     inputs:
       data: ${{parent.inputs.data}}
-      test_train_ratio: ${{parent.inputs.test_train_ratio}}
-
+     
     outputs:
       train_data: ${{parent.outputs.train_data}}
       test_data: ${{parent.outputs.test_data}}
