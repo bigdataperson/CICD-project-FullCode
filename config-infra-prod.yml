@@ -19,4 +19,4 @@ variables:
 
   # For pipeline reference
   resource_group: "glmsftai-subri"
-  aml_workspace: "fitwellworkspace"
+  aml_workspace: "FitwellWorkspace"
